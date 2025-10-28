@@ -1,6 +1,9 @@
+import math
+import time
 from copy import deepcopy
 
 import numpy as np
+from scipy.spatial.distance import cdist
 
 
 rng = np.random.default_rng()
@@ -112,6 +115,7 @@ y = np.array([2, 5, 5, 2, 1, 3, 4, 1])
 multi_result = np.array_equal(x, y)
 print(f'Task 7.2(Numpy): {multi_result}')
 
+
 #7.3 Задача 3: Найти максимальный элемент в векторе x среди элементов, перед которыми стоит ноль.
 # Например, для x = np.array([6, 2, 0, 3, 0, 0, 5, 7, 0]) ответ 5.
 x = [6, 2, 0, 3, 0, 0, 5, 7, 0, 9, 0, 2, 1, 0, 4]
@@ -125,3 +129,49 @@ x = np.array([6, 2, 0, 3, 0, 0, 5, 7, 0, 9, 0, 2, 1, 0, 4])
 zero_mask = x[:-1] == 0
 all_after_zero = x[1:][zero_mask]
 print(f'Task 7.3(Numpy): {np.max(all_after_zero)}')
+
+
+#7.4 Задача 4: Реализовать кодирование длин серий (Run-length encoding). Для некоторого вектора x необходимо вернуть кортеж
+# из двух векторов одинаковой длины. Первый содержит числа, а второй - сколько раз их нужно повторить.
+
+#Python
+x = [2, 2, 2, 3, 3, 3, 5, 5, 7, 8, 8]
+without_duplicates = tuple(set(x))
+count_elem = [x.count(i) for i in without_duplicates]
+print(f'Task 7.4(Python): {list(without_duplicates), list(count_elem)}')
+
+#Numpy
+x = np.array([2, 2, 2, 3, 3, 3, 5, 5, 7, 8, 8])
+values, counts = np.unique(x, return_counts=True)
+print(f'Task 7.4(Numpy): {values, counts}')
+
+
+#7.5 Задача 5: Даны две выборки объектов - X и Y. Вычислить матрицу евклидовых расстояний между объектами.
+# Сравните с функцией scipy.spatial.distance.cdist по скорости работы.
+
+#Python
+A = [[1, 2, 3, 4],[5, 6, 7, 9]]
+B = [0.5, 0.1, 0.3, 0.6]
+
+
+def distance_metrik(point_A:list, point_B:list):
+    evkld_result = [pow((i-j), 2) for i, j in zip(point_A, point_B)]
+    evklid_distance = (sum(evkld_result))**0.5
+    return(evklid_distance)
+
+
+start_time = time.time()
+first_way = distance_metrik(A[0], B)
+second_way = distance_metrik(A[1], B)
+end_time = time.time()
+print(f'Task 7.5(Python): {first_way, second_way}, time: {end_time - start_time}')
+
+#Scipy
+An = np.array([[1, 2, 3, 4],[5, 6, 7, 9]])
+Bn = np.array([[0.5, 0.1, 0.3, 0.6]])
+start_time = time.time()
+distance = cdist(An, Bn)
+end_time = time.time()
+print(f'Task 7.5(Python): {distance}, time: {end_time - start_time}',end='')
+
+#Numpy
