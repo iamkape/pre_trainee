@@ -154,24 +154,95 @@ A = [[1, 2, 3, 4],[5, 6, 7, 9]]
 B = [0.5, 0.1, 0.3, 0.6]
 
 
-def distance_metrik(point_A:list, point_B:list):
+def distance_metrik(point_A:list, point_B:list)->tuple:
     evkld_result = [pow((i-j), 2) for i, j in zip(point_A, point_B)]
     evklid_distance = (sum(evkld_result))**0.5
     return(evklid_distance)
 
 
 start_time = time.time()
-first_way = distance_metrik(A[0], B)
-second_way = distance_metrik(A[1], B)
+first_distance = distance_metrik(A[0], B)
+second_distance = distance_metrik(A[1], B)
 end_time = time.time()
-print(f'Task 7.5(Python): {first_way, second_way}, time: {end_time - start_time}')
+print(f'Task 7.5(Python): {first_distance, second_distance}, time: {end_time - start_time}')
 
 #Scipy
-An = np.array([[1, 2, 3, 4],[5, 6, 7, 9]])
-Bn = np.array([[0.5, 0.1, 0.3, 0.6]])
+As = np.array([[1, 2, 3, 4],[5, 6, 7, 9]])
+Bs= np.array([[0.5, 0.1, 0.3, 0.6]])
 start_time = time.time()
-distance = cdist(An, Bn)
+distance_scipy = cdist(As, Bs)
 end_time = time.time()
-print(f'Task 7.5(Python): {distance}, time: {end_time - start_time}',end='')
+print(f'Task 7.5(Scipy): {distance_scipy}, time: {end_time - start_time}',end='\n')
 
 #Numpy
+An = np.array([[1, 2, 3, 4],[5, 6, 7, 9]])
+Bn = np.array([0.5, 0.1, 0.3, 0.6])
+start_time = time.time()
+dif_result = An - Bn
+pow_result = np.pow(dif_result, 2)
+sum_result = np.sum(pow_result, axis=1)
+distance_numpy = sum_result ** 0.5
+end_time = time.time()
+print(f'Task 7.5(Numpy): {distance_numpy}, time: {end_time - start_time}')
+
+
+# 8.1 Просмотрите файл cereal.csv. Этот файл содержит количества калорий для различных марок хлопьев.
+# Загрузите данные из файла и сохраните их как calorie_stats.
+
+calorie_stats = np.loadtxt("./data_files/cereal.csv", delimiter=",")
+# print(calorie_stats)
+
+
+#8.2В одной порции CrunchieMunchies содержится 60 калорий. Насколько выше среднее количество калорий у ваших конкурентов?
+# Сохраните ответ в переменной average_calories и распечатайте переменную в терминале
+
+crunchie_calories = 60
+competitor_calories = np.average(calorie_stats)
+comparison_calories = competitor_calories - crunchie_calories
+print(f'Task 8.2: У конкурентов, в среднем, кол-во калорий на {comparison_calories} единиц больше, '
+      f'чем у "CrunchieMunchies"')
+
+
+#8.3Корректно ли среднее количество калорий отражает распределение набора данных? Давайте отсортируем данные и посмотрим.
+
+calorie_stats_sorted = np.sort(calorie_stats)
+print(f'Task 8.3: {calorie_stats_sorted}')
+
+
+#8.4 Вычислите медиану набора данных и сохраните свой ответ в median_calories.
+# Выведите медиану, чтобы вы могли видеть, как она сравнивается со средним значением.
+
+median_calories = np.median(calorie_stats_sorted)
+print(f'Task 8.4: {median_calories}')
+
+
+#8.5 Рассчитайте различные процентили и распечатайте их, пока не найдете наименьший процентиль, превышающий 60 калорий.
+# Сохраните это значение в переменной nth_percentile.
+
+def percentile(percent:int|float)->int:
+    return np.percentile(calorie_stats, percent)
+print(percentile(10), percentile(30), percentile(20), percentile(5), percentile(3), percentile(3.5))
+nth_percentile = percentile(3.5)
+print(f'Task 8.5: {nth_percentile}')
+
+
+#8.6 Вместо этого давайте подсчитаем процент хлопьев, в которых содержится более 60 калорий на порцию.
+# Сохраните свой ответ в переменной more_calories и распечатайте его
+
+more_calories = calorie_stats[calorie_stats > 60].size / calorie_stats.size * 100
+print(f'Task 8.6: {more_calories}')
+
+
+#8.7 Рассчитайте величину отклонения, найдя стандартное отклонение,
+# Сохраните свой ответ в calorie_std и распечатайте на терминале. Как мы можем включить эту ценность в наш анализ?
+
+calorie_std = np.std(calorie_stats)
+print(f'Task 8.7: {calorie_std}')
+
+
+#8.8 Напишите короткий абзац, в котором кратко изложите свои выводы и то, как, по вашему мнению,
+# эти данные могут быть использованы в интересах Mycrunch при маркетинге CrunchieMunchies.
+
+print('Task 8.8: Я бы сказал что данные которые мы получили показывают хорошую возможность для развития '
+      'CrunchieMunchies. Небольшое кол-во калорий в сравнении с конкурентами говорит о том что в еде мало жиров и '
+      'сахара. Это является основой в здоровой и сбалансированной пище, как для взрослых так и для детей.')
